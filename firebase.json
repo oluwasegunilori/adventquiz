@@ -1,0 +1,49 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "churchgamey",
+          "appId": "1:679500370598:android:19535f4bc195afc6ebda67",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "churchgamey",
+          "appId": "1:679500370598:ios:fa1736f35221e93aebda67",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "churchgamey",
+          "configurations": {
+            "android": "1:679500370598:android:19535f4bc195afc6ebda67",
+            "ios": "1:679500370598:ios:fa1736f35221e93aebda67",
+            "web": "1:679500370598:web:db57482b943156edebda67"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

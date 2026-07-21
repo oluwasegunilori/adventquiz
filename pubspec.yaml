@@ -1,0 +1,32 @@
+name: adventquiz
+description: Kahoot-style Adventist Bible trivia for live group play.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^4.11.0
+  firebase_auth: ^6.5.4
+  cloud_firestore: ^6.6.0
+  go_router: ^17.3.0
+  google_fonts: ^8.1.0
+  provider: ^6.1.5+1
+  uuid: ^4.5.3
+  shared_preferences: ^2.5.5
+  audioplayers: ^6.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/packs/
+    - assets/sounds/
