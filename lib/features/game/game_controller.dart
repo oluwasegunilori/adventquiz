@@ -167,7 +167,6 @@ class GameController extends ChangeNotifier {
   }
 
   Future<void> continueAfterReveal() {
-    sounds.play(GameSound.click);
     final current = room;
     if (current == null) return Future.value();
     final isLast = current.currentIndex >= current.questions.length - 1;
@@ -177,37 +176,22 @@ class GameController extends ChangeNotifier {
     return _run(() => repository.nextQuestion(roomId));
   }
 
-  Future<void> startGame() {
-    sounds.play(GameSound.click);
-    return _run(() => repository.startGame(roomId));
-  }
+  Future<void> startGame() => _run(() => repository.startGame(roomId));
 
-  Future<void> reveal() {
-    sounds.play(GameSound.click);
-    return _run(() => repository.revealQuestion(roomId));
-  }
+  Future<void> reveal() => _run(() => repository.revealQuestion(roomId));
 
-  Future<void> showLeaderboard() {
-    sounds.play(GameSound.click);
-    return _run(() => repository.showLeaderboard(roomId));
-  }
+  Future<void> showLeaderboard() =>
+      _run(() => repository.showLeaderboard(roomId));
 
-  Future<void> nextQuestion() {
-    sounds.play(GameSound.click);
-    return _run(() => repository.nextQuestion(roomId));
-  }
+  Future<void> nextQuestion() => _run(() => repository.nextQuestion(roomId));
 
-  Future<void> endGame() {
-    sounds.play(GameSound.click);
-    return _run(() => repository.endGame(roomId));
-  }
+  Future<void> endGame() => _run(() => repository.endGame(roomId));
 
   Future<void> submitAnswer(String choiceId) async {
     final current = room;
     if (current == null || current.status != RoomStatus.question) return;
     if (selectedChoiceId != null) return;
     selectedChoiceId = choiceId;
-    sounds.play(GameSound.select);
     notifyListeners();
     final started = current.questionStartedAt ?? DateTime.now();
     final ms = DateTime.now().difference(started).inMilliseconds;

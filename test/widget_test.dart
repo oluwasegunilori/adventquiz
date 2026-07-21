@@ -14,13 +14,12 @@ void main() {
 
   testWidgets('Home shows AdventQuiz brand and actions', (tester) async {
     final sounds = SoundService();
-    // Skip audio init assets in unit tests.
     final bootstrap = AppBootstrap(
       repository: LocalRoomRepository(),
       usingFirebase: false,
     );
     await tester.pumpWidget(
-      AdventQuizApp(bootstrap: bootstrap, sounds: sounds),
+      AdventQuizApp(initialBootstrap: bootstrap, sounds: sounds),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 600));

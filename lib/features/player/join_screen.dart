@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/room_repository.dart';
-import '../../services/sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/atmosphere_background.dart';
+import '../../widgets/bounce_buttons.dart';
 import '../../widgets/mute_button.dart';
 
 class JoinScreen extends StatefulWidget {
@@ -28,7 +28,6 @@ class _JoinScreenState extends State<JoinScreen> {
       setState(() => _error = 'Enter the 6-digit PIN');
       return;
     }
-    context.read<SoundService>().play(GameSound.click);
     setState(() {
       _joining = true;
       _error = null;
@@ -40,7 +39,6 @@ class _JoinScreenState extends State<JoinScreen> {
         nickname: _nameController.text,
       );
       if (!mounted) return;
-      context.read<SoundService>().play(GameSound.join);
       context.go('/room/${room.id}');
     } catch (e) {
       setState(() {
@@ -128,7 +126,7 @@ class _JoinScreenState extends State<JoinScreen> {
                   ),
                 ],
                 const SizedBox(height: 20),
-                ElevatedButton(
+                BounceFilledButton(
                   onPressed: _joining ? null : _join,
                   child: Text(_joining ? 'Joining…' : 'Join'),
                 ),

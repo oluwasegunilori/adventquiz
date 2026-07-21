@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../services/sound_service.dart';
 import '../theme/app_theme.dart';
 
 class AnswerButton extends StatefulWidget {
@@ -29,12 +31,24 @@ class AnswerButton extends StatefulWidget {
 }
 
 class _AnswerButtonState extends State<AnswerButton>
-    with SingleTickerProviderStateMixin {
-  bool _pressed = false;
+    with TickerProviderStateMixin {
   late final AnimationController _shake = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 420),
   );
+  late final AnimationController _bounce = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+  );
+  late final Animation<double> _bounceScale = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 1, end: 0.9), weight: 35),
+    TweenSequenceItem(
+      tween: Tween(begin: 0.9, end: 1.08)
+          .chain(CurveTween(curve: Curves.easeOutBack)),
+      weight: 65,
+    ),
+    TweenSequenceItem(tween: Tween(begin: 1.08, end: 1), weight: 30),
+  ]).animate(_bounce);
 
   @override
   void didUpdateWidget(covariant AnswerButton oldWidget) {
@@ -44,11 +58,24 @@ class _AnswerButtonState extends State<AnswerButton>
         oldWidget.revealCorrect != false) {
       _shake.forward(from: 0);
     }
+    if (widget.revealCorrect == true && oldWidget.revealCorrect != true) {
+      _bounce.forward(from: 0);
+    }
+  }
+
+  Future<void> _onTap() async {
+    if (!widget.enabled || widget.onTap == null) return;
+    final sounds = context.read<SoundService>();
+    await sounds.unlock();
+    await sounds.play(GameSound.select);
+    _bounce.forward(from: 0);
+    widget.onTap!();
   }
 
   @override
   void dispose() {
     _shake.dispose();
+    _bounce.dispose();
     super.dispose();
   }
 
@@ -65,7 +92,8 @@ class _AnswerButtonState extends State<AnswerButton>
     final revealPop = widget.revealCorrect == true;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: Duration(milliseconds: 380 + widget.entranceDelay.inMilliseconds),
+      duration:
+          Duration(milliseconds: 380 + widget.entranceDelay.inMilliseconds),
       curve: Interval(
         widget.entranceDelay.inMilliseconds /
             (380 + widget.entranceDelay.inMilliseconds).clamp(1, 9999),
@@ -80,84 +108,79 @@ class _AnswerButtonState extends State<AnswerButton>
         );
       },
       child: AnimatedBuilder(
-        animation: _shake,
+        animation: Listenable.merge([_shake, _bounce]),
         builder: (context, child) {
           final t = _shake.value;
           final dx = (t < 1 ? (1 - t) : 0.0) *
               8 *
               ((t * 18).floor().isEven ? 1.0 : -1.0);
-          return Transform.translate(offset: Offset(dx, 0), child: child);
+          final scale = _bounceScale.value *
+              (widget.selected && !revealPop ? 1.03 : (revealPop ? 1.04 : 1));
+          return Transform.translate(
+            offset: Offset(dx, 0),
+            child: Transform.scale(scale: scale, child: child),
+          );
         },
-        child: AnimatedScale(
-          scale: _pressed
-              ? 0.96
-              : (widget.selected
-                  ? 1.03
-                  : (revealPop ? 1.04 : 1)),
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutBack,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeOutCubic,
-            decoration: BoxDecoration(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeOutCubic,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              if (revealPop || widget.selected)
+                BoxShadow(
+                  color: _bg.withValues(alpha: 0.35),
+                  blurRadius: revealPop ? 18 : 10,
+                  offset: const Offset(0, 6),
+                ),
+            ],
+          ),
+          child: Material(
+            color: _bg,
+            borderRadius: BorderRadius.circular(18),
+            child: InkWell(
               borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                if (revealPop || widget.selected)
-                  BoxShadow(
-                    color: _bg.withValues(alpha: 0.35),
-                    blurRadius: revealPop ? 18 : 10,
-                    offset: const Offset(0, 6),
-                  ),
-              ],
-            ),
-            child: Material(
-              color: _bg,
-              borderRadius: BorderRadius.circular(18),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(18),
-                onTap: widget.enabled ? widget.onTap : null,
-                onHighlightChanged: (v) => setState(() => _pressed = v),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  constraints: const BoxConstraints(minHeight: 72),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    border: widget.selected || revealPop
-                        ? Border.all(color: Colors.white, width: 3)
-                        : null,
-                  ),
-                  child: Row(
-                    children: [
-                      if (widget.symbol != null) ...[
-                        Text(
-                          widget.symbol!,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                      ],
-                      Expanded(
-                        child: Text(
-                          widget.label,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25,
-                          ),
+              onTap: widget.enabled ? _onTap : null,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                constraints: const BoxConstraints(minHeight: 72),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  border: widget.selected || revealPop
+                      ? Border.all(color: Colors.white, width: 3)
+                      : null,
+                ),
+                child: Row(
+                  children: [
+                    if (widget.symbol != null) ...[
+                      Text(
+                        widget.symbol!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
-                      if (revealPop)
-                        const Icon(Icons.check_circle, color: Colors.white)
-                      else if (widget.revealCorrect == false && widget.selected)
-                        const Icon(Icons.cancel, color: Colors.white),
+                      const SizedBox(width: 14),
                     ],
-                  ),
+                    Expanded(
+                      child: Text(
+                        widget.label,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
+                    ),
+                    if (revealPop)
+                      const Icon(Icons.check_circle, color: Colors.white)
+                    else if (widget.revealCorrect == false && widget.selected)
+                      const Icon(Icons.cancel, color: Colors.white),
+                  ],
                 ),
               ),
             ),

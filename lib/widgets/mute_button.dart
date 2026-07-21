@@ -12,11 +12,16 @@ class MuteButton extends StatelessWidget {
     final sounds = context.watch<SoundService>();
     return IconButton(
       tooltip: sounds.muted ? 'Unmute' : 'Mute',
-      onPressed: () {
-        sounds.toggleMute();
+      onPressed: () async {
+        await sounds.unlock();
+        await sounds.toggleMute();
       },
       icon: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
+        transitionBuilder: (child, anim) => ScaleTransition(
+          scale: anim,
+          child: child,
+        ),
         child: Icon(
           sounds.muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
           key: ValueKey(sounds.muted),

@@ -13,54 +13,68 @@ import 'theme/app_theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AppBootstrap bootstrap;
-  try {
-    bootstrap = await AppBootstrap.init().timeout(
-      const Duration(seconds: 8),
-      onTimeout: () {
-        debugPrint('Firebase init timed out; using local mode');
-        return AppBootstrap(
-          repository: LocalRoomRepository(),
-          usingFirebase: false,
-        );
-      },
-    );
-  } catch (e, st) {
-    debugPrint('Bootstrap failed: $e\n$st');
-    bootstrap = AppBootstrap(
-      repository: LocalRoomRepository(),
-      usingFirebase: false,
-    );
-  }
-
+  // Paint first frame immediately — never block UI on Firebase.
   final sounds = SoundService();
-  // Don't block first frame on audio prefs.
-  unawaited(
-    sounds.init().catchError((Object e, StackTrace st) {
-      debugPrint('Sound init error: $e\n$st');
-    }),
-  );
+  unawaited(sounds.init().catchError((Object e, StackTrace st) {
+    debugPrint('Sound init error: $e\n$st');
+  }));
 
-  runApp(AdventQuizApp(bootstrap: bootstrap, sounds: sounds));
+  runApp(
+    AdventQuizApp(
+      initialBootstrap: AppBootstrap(
+        repository: LocalRoomRepository(),
+        usingFirebase: false,
+      ),
+      sounds: sounds,
+    ),
+  );
 }
 
-class AdventQuizApp extends StatelessWidget {
+class AdventQuizApp extends StatefulWidget {
   const AdventQuizApp({
     super.key,
-    required this.bootstrap,
+    required this.initialBootstrap,
     required this.sounds,
   });
 
-  final AppBootstrap bootstrap;
+  final AppBootstrap initialBootstrap;
   final SoundService sounds;
 
   @override
+  State<AdventQuizApp> createState() => _AdventQuizAppState();
+}
+
+class _AdventQuizAppState extends State<AdventQuizApp> {
+  late AppBootstrap _bootstrap = widget.initialBootstrap;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_upgradeFirebase());
+  }
+
+  Future<void> _upgradeFirebase() async {
+    try {
+      final next = await AppBootstrap.init().timeout(
+        const Duration(seconds: 6),
+        onTimeout: () => _bootstrap,
+      );
+      if (!mounted) return;
+      if (next.usingFirebase != _bootstrap.usingFirebase) {
+        setState(() => _bootstrap = next);
+      }
+    } catch (e, st) {
+      debugPrint('Background Firebase upgrade failed: $e\n$st');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final router = createRouter(usingFirebase: bootstrap.usingFirebase);
+    final router = createRouter(usingFirebase: _bootstrap.usingFirebase);
     return MultiProvider(
       providers: [
-        Provider<RoomRepository>.value(value: bootstrap.repository),
-        ChangeNotifierProvider<SoundService>.value(value: sounds),
+        Provider<RoomRepository>.value(value: _bootstrap.repository),
+        ChangeNotifierProvider<SoundService>.value(value: widget.sounds),
       ],
       child: MaterialApp.router(
         title: 'AdventQuiz',
