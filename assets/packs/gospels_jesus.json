@@ -1,0 +1,111 @@
+{
+  "id": "gospels_jesus",
+  "title": "Gospels & Jesus",
+  "description": "The life, teaching, death, and resurrection of Jesus.",
+  "questions": [
+    {
+      "id": "gj1",
+      "text": "How many Gospels are in the New Testament?",
+      "choices": [
+        {"id": "a", "text": "Three"},
+        {"id": "b", "text": "Four"},
+        {"id": "c", "text": "Five"},
+        {"id": "d", "text": "Twelve"}
+      ],
+      "correctId": "b",
+      "verseRef": null,
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj2",
+      "text": "Who baptized Jesus in the Jordan River?",
+      "choices": [
+        {"id": "a", "text": "Peter"},
+        {"id": "b", "text": "John the Baptist"},
+        {"id": "c", "text": "Andrew"},
+        {"id": "d", "text": "Nicodemus"}
+      ],
+      "correctId": "b",
+      "verseRef": "Matthew 3:13–17",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj3",
+      "text": "According to John 3:16, God so loved the world that He gave His…",
+      "choices": [
+        {"id": "a", "text": "Only Son"},
+        {"id": "b", "text": "Law"},
+        {"id": "c", "text": "Angels"},
+        {"id": "d", "text": "Temple"}
+      ],
+      "correctId": "a",
+      "verseRef": "John 3:16",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj4",
+      "text": "How many days was Jesus in the tomb before the resurrection?",
+      "choices": [
+        {"id": "a", "text": "One"},
+        {"id": "b", "text": "Two"},
+        {"id": "c", "text": "Three"},
+        {"id": "d", "text": "Seven"}
+      ],
+      "correctId": "c",
+      "verseRef": "Luke 24:7",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj5",
+      "text": "Which disciple denied Jesus three times?",
+      "choices": [
+        {"id": "a", "text": "Judas"},
+        {"id": "b", "text": "Thomas"},
+        {"id": "c", "text": "Peter"},
+        {"id": "d", "text": "Philip"}
+      ],
+      "correctId": "c",
+      "verseRef": "Luke 22:54–62",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj6",
+      "text": "Jesus said, “I am the way, the truth, and the…”",
+      "choices": [
+        {"id": "a", "text": "Light"},
+        {"id": "b", "text": "Life"},
+        {"id": "c", "text": "Door"},
+        {"id": "d", "text": "Word"}
+      ],
+      "correctId": "b",
+      "verseRef": "John 14:6",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj7",
+      "text": "On which mountain did Jesus give the Beatitudes in Matthew?",
+      "choices": [
+        {"id": "a", "text": "Mount of Olives discourse only"},
+        {"id": "b", "text": "The mountain / Sermon on the Mount"},
+        {"id": "c", "text": "Mount Sinai"},
+        {"id": "d", "text": "Mount Carmel"}
+      ],
+      "correctId": "b",
+      "verseRef": "Matthew 5–7",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "gj8",
+      "text": "Who asked Jesus to remember him when He entered His kingdom?",
+      "choices": [
+        {"id": "a", "text": "A Roman centurion"},
+        {"id": "b", "text": "The repentant thief on the cross"},
+        {"id": "c", "text": "Bartimaeus"},
+        {"id": "d", "text": "Zacchaeus"}
+      ],
+      "correctId": "b",
+      "verseRef": "Luke 23:42–43",
+      "timeLimitSec": 20
+    }
+  ]
+}

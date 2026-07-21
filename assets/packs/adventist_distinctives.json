@@ -1,0 +1,111 @@
+{
+  "id": "adventist_distinctives",
+  "title": "Adventist Distinctives",
+  "description": "Scripture-first questions on Sabbath, sanctuary, and the blessed hope.",
+  "questions": [
+    {
+      "id": "ad1",
+      "text": "According to Exodus 20, which day of the week is the Sabbath?",
+      "choices": [
+        {"id": "a", "text": "The first day"},
+        {"id": "b", "text": "The sixth day"},
+        {"id": "c", "text": "The seventh day"},
+        {"id": "d", "text": "Any day of rest"}
+      ],
+      "correctId": "c",
+      "verseRef": "Exodus 20:8–11",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "ad2",
+      "text": "What does the Second Coming of Jesus emphasize in Adventist hope?",
+      "choices": [
+        {"id": "a", "text": "A secret, invisible coming only"},
+        {"id": "b", "text": "A visible, personal return of Christ"},
+        {"id": "c", "text": "Only a spiritual awakening in hearts"},
+        {"id": "d", "text": "Rebuilding the earthly temple forever"}
+      ],
+      "correctId": "b",
+      "verseRef": "Acts 1:9–11; 1 Thessalonians 4:16–17",
+      "timeLimitSec": 25
+    },
+    {
+      "id": "ad3",
+      "text": "In the sanctuary teaching, Christ ministers as our…",
+      "choices": [
+        {"id": "a", "text": "Earthly priest in Jerusalem"},
+        {"id": "b", "text": "High Priest in the heavenly sanctuary"},
+        {"id": "c", "text": "Political king only"},
+        {"id": "d", "text": "Temple builder on earth"}
+      ],
+      "correctId": "b",
+      "verseRef": "Hebrews 8:1–2",
+      "timeLimitSec": 25
+    },
+    {
+      "id": "ad4",
+      "text": "Revelation 14’s first angel’s message calls people to…",
+      "choices": [
+        {"id": "a", "text": "Fear God and give Him glory"},
+        {"id": "b", "text": "Build a tower"},
+        {"id": "c", "text": "Flee to the mountains immediately"},
+        {"id": "d", "text": "Collect manna each day"}
+      ],
+      "correctId": "a",
+      "verseRef": "Revelation 14:6–7",
+      "timeLimitSec": 25
+    },
+    {
+      "id": "ad5",
+      "text": "How is the gift of prophecy understood in Adventist history?",
+      "choices": [
+        {"id": "a", "text": "Replacing Scripture"},
+        {"id": "b", "text": "A lesser light pointing to Scripture"},
+        {"id": "c", "text": "A new gospel"},
+        {"id": "d", "text": "A closed Bible"}
+      ],
+      "correctId": "b",
+      "verseRef": "Ephesians 4:11–13; Revelation 12:17",
+      "timeLimitSec": 25
+    },
+    {
+      "id": "ad6",
+      "text": "The health message among Adventists often frames the body as…",
+      "choices": [
+        {"id": "a", "text": "A temple of the Holy Spirit"},
+        {"id": "b", "text": "An earthly prison only"},
+        {"id": "c", "text": "Unimportant to faith"},
+        {"id": "d", "text": "A means of earning salvation"}
+      ],
+      "correctId": "a",
+      "verseRef": "1 Corinthians 6:19–20",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "ad7",
+      "text": "According to Genesis and the Sabbath commandment, the Sabbath is first rooted in…",
+      "choices": [
+        {"id": "a", "text": "Creation rest"},
+        {"id": "b", "text": "Roman calendars"},
+        {"id": "c", "text": "Church councils alone"},
+        {"id": "d", "text": "The exile in Babylon"}
+      ],
+      "correctId": "a",
+      "verseRef": "Genesis 2:2–3; Exodus 20:11",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "ad8",
+      "text": "Adventists affirm we are saved by…",
+      "choices": [
+        {"id": "a", "text": "Works alone"},
+        {"id": "b", "text": "Grace through faith in Jesus"},
+        {"id": "c", "text": "Church membership alone"},
+        {"id": "d", "text": "Perfect health alone"}
+      ],
+      "correctId": "b",
+      "verseRef": "Ephesians 2:8–9",
+      "timeLimitSec": 20
+    }
+  ]
+}

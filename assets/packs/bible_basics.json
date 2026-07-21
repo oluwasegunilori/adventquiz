@@ -1,0 +1,111 @@
+{
+  "id": "bible_basics",
+  "title": "Bible Basics",
+  "description": "Old and New Testament foundations for the whole church.",
+  "questions": [
+    {
+      "id": "bb1",
+      "text": "How many books are in the Protestant Bible?",
+      "choices": [
+        {"id": "a", "text": "39"},
+        {"id": "b", "text": "66"},
+        {"id": "c", "text": "73"},
+        {"id": "d", "text": "27"}
+      ],
+      "correctId": "b",
+      "verseRef": null,
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb2",
+      "text": "Who built the ark according to Genesis?",
+      "choices": [
+        {"id": "a", "text": "Abraham"},
+        {"id": "b", "text": "Moses"},
+        {"id": "c", "text": "Noah"},
+        {"id": "d", "text": "David"}
+      ],
+      "correctId": "c",
+      "verseRef": "Genesis 6:13–22",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb3",
+      "text": "Which book comes immediately after the Gospels?",
+      "choices": [
+        {"id": "a", "text": "Romans"},
+        {"id": "b", "text": "Acts"},
+        {"id": "c", "text": "Hebrews"},
+        {"id": "d", "text": "Revelation"}
+      ],
+      "correctId": "b",
+      "verseRef": null,
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb4",
+      "text": "What did God create on the seventh day according to Genesis 2?",
+      "choices": [
+        {"id": "a", "text": "Light"},
+        {"id": "b", "text": "Animals"},
+        {"id": "c", "text": "Humankind"},
+        {"id": "d", "text": "He rested"}
+      ],
+      "correctId": "d",
+      "verseRef": "Genesis 2:2–3",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb5",
+      "text": "Who was thrown into a den of lions for praying to God?",
+      "choices": [
+        {"id": "a", "text": "Joseph"},
+        {"id": "b", "text": "Daniel"},
+        {"id": "c", "text": "Elijah"},
+        {"id": "d", "text": "Jeremiah"}
+      ],
+      "correctId": "b",
+      "verseRef": "Daniel 6",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb6",
+      "text": "Which apostle wrote many of the New Testament letters?",
+      "choices": [
+        {"id": "a", "text": "Peter"},
+        {"id": "b", "text": "John"},
+        {"id": "c", "text": "Paul"},
+        {"id": "d", "text": "James"}
+      ],
+      "correctId": "c",
+      "verseRef": null,
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb7",
+      "text": "Where was Jesus born?",
+      "choices": [
+        {"id": "a", "text": "Nazareth"},
+        {"id": "b", "text": "Jerusalem"},
+        {"id": "c", "text": "Bethlehem"},
+        {"id": "d", "text": "Capernaum"}
+      ],
+      "correctId": "c",
+      "verseRef": "Luke 2:4–7",
+      "timeLimitSec": 20
+    },
+    {
+      "id": "bb8",
+      "text": "What is the last book of the Bible?",
+      "choices": [
+        {"id": "a", "text": "Jude"},
+        {"id": "b", "text": "Malachi"},
+        {"id": "c", "text": "Revelation"},
+        {"id": "d", "text": "Acts"}
+      ],
+      "correctId": "c",
+      "verseRef": null,
+      "timeLimitSec": 20
+    }
+  ]
+}
