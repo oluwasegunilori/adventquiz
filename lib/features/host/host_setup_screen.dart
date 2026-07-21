@@ -5,9 +5,10 @@ import 'package:provider/provider.dart';
 import '../../data/pack_loader.dart';
 import '../../data/room_repository.dart';
 import '../../models/quiz_pack.dart';
-import '../../services/sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/atmosphere_background.dart';
+import '../../widgets/bounce_buttons.dart';
+import '../../widgets/bounce_tap.dart';
 import '../../widgets/mute_button.dart';
 
 class HostSetupScreen extends StatefulWidget {
@@ -50,7 +51,6 @@ class _HostSetupScreenState extends State<HostSetupScreen> {
   Future<void> _create() async {
     final pack = _selected;
     if (pack == null) return;
-    context.read<SoundService>().play(GameSound.click);
     setState(() {
       _creating = true;
       _error = null;
@@ -128,14 +128,8 @@ class _HostSetupScreenState extends State<HostSetupScreen> {
                           itemBuilder: (context, index) {
                             final pack = _packs[index];
                             final selected = _selected?.id == pack.id;
-                            return InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () {
-                                context
-                                    .read<SoundService>()
-                                    .play(GameSound.click);
-                                setState(() => _selected = pack);
-                              },
+                            return BounceTap(
+                              onTap: () => setState(() => _selected = pack),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 180),
                                 padding: const EdgeInsets.all(16),
@@ -192,7 +186,7 @@ class _HostSetupScreenState extends State<HostSetupScreen> {
                         ),
                       ],
                       const SizedBox(height: 12),
-                      ElevatedButton(
+                      BounceFilledButton(
                         onPressed: _creating ? null : _create,
                         child: Text(_creating ? 'Creating…' : 'Create room'),
                       ),

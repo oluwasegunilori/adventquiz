@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '../../services/sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/atmosphere_background.dart';
+import '../../widgets/bounce_buttons.dart';
 import '../../widgets/motion.dart';
 import '../../widgets/mute_button.dart';
 
@@ -15,8 +14,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sounds = context.read<SoundService>();
-
     return Scaffold(
       body: AtmosphereBackground(
         child: SafeArea(
@@ -53,22 +50,16 @@ class HomeScreen extends StatelessWidget {
                 const Spacer(),
                 PopIn(
                   delay: const Duration(milliseconds: 180),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      sounds.play(GameSound.click);
-                      context.go('/host');
-                    },
+                  child: BounceFilledButton(
+                    onPressed: () => context.go('/host'),
                     child: const Text('Host a game'),
                   ),
                 ),
                 const SizedBox(height: 14),
                 PopIn(
                   delay: const Duration(milliseconds: 260),
-                  child: OutlinedButton(
-                    onPressed: () {
-                      sounds.play(GameSound.click);
-                      context.go('/join');
-                    },
+                  child: BounceOutlinedButton(
+                    onPressed: () => context.go('/join'),
                     child: const Text('Join with PIN'),
                   ),
                 ),

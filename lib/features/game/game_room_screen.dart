@@ -9,6 +9,8 @@ import '../../services/sound_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/answer_button.dart';
 import '../../widgets/atmosphere_background.dart';
+import '../../widgets/bounce_buttons.dart';
+import '../../widgets/bounce_tap.dart';
 import '../../widgets/leaderboard_view.dart';
 import '../../widgets/motion.dart';
 import '../../widgets/mute_button.dart';
@@ -153,9 +155,8 @@ class _LobbyView extends StatelessWidget {
           delay: const Duration(milliseconds: 120),
           child: Pulse(
             active: room.players.length < 2,
-            child: GestureDetector(
+            child: BounceTap(
               onTap: () async {
-                context.read<SoundService>().play(GameSound.click);
                 await Clipboard.setData(ClipboardData(text: room.pin));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -284,7 +285,7 @@ class _LobbyView extends StatelessWidget {
           ),
         if (host)
           PopIn(
-            child: ElevatedButton(
+            child: BounceFilledButton(
               onPressed: room.players.isEmpty || c.busy ? null : c.startGame,
               child: const Text('Start game'),
             ),
@@ -427,7 +428,7 @@ class _QuestionView extends StatelessWidget {
               : const SizedBox.shrink(key: ValueKey('open')),
         ),
         if (host)
-          OutlinedButton(
+          BounceOutlinedButton(
             onPressed: c.busy ? null : c.reveal,
             child: const Text('Reveal answers'),
           ),
@@ -583,7 +584,7 @@ class _RevealView extends StatelessWidget {
         if (host)
           PopIn(
             delay: const Duration(milliseconds: 450),
-            child: ElevatedButton(
+            child: BounceFilledButton(
               onPressed: c.busy ? null : c.continueAfterReveal,
               child: Text(isLast ? 'Final podium' : 'Next question'),
             ),
@@ -654,7 +655,7 @@ class _LeaderboardPhase extends StatelessWidget {
         ),
         if (host) ...[
           const SizedBox(height: 12),
-          ElevatedButton(
+          BounceFilledButton(
             onPressed: c.busy ? null : c.nextQuestion,
             child: const Text('Next question'),
           ),
@@ -695,11 +696,8 @@ class _FinishedView extends StatelessWidget {
             const SizedBox(height: 12),
             PopIn(
               delay: const Duration(milliseconds: 500),
-              child: ElevatedButton(
-                onPressed: () {
-                  context.read<SoundService>().play(GameSound.click);
-                  context.go('/');
-                },
+              child: BounceFilledButton(
+                onPressed: () => context.go('/'),
                 child: const Text('Back home'),
               ),
             ),
