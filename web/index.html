@@ -6,6 +6,9 @@
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="AdventQuiz — live Bible trivia for Adventist groups.">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -24,16 +27,48 @@
     .boot {
       min-height: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 12px;
       font-family: Georgia, "Times New Roman", serif;
       color: #2F5D50;
       letter-spacing: 0.02em;
+      text-align: center;
+      padding: 24px;
+    }
+    .boot strong {
+      font-size: 1.6rem;
+    }
+    .boot span {
+      color: #6E7F78;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
-  <div class="boot" id="boot">Loading AdventQuiz…</div>
+  <div class="boot" id="boot">
+    <strong>AdventQuiz</strong>
+    <span>Loading…</span>
+  </div>
+  <script>
+    // Bust stale Flutter service workers for this site only (not whole Chrome).
+    (async function clearStaleWorker() {
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map((r) => r.unregister()));
+        }
+        if (window.caches) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+      } catch (e) {
+        console.warn('Could not clear stale worker/cache', e);
+      }
+    })();
+  </script>
   <script>
     {{flutter_js}}
     {{flutter_build_config}}
@@ -45,9 +80,9 @@
         const appRunner = await engineInitializer.initializeEngine({
           useLocalCanvasKit: true
         });
+        await appRunner.runApp();
         const boot = document.getElementById('boot');
         if (boot) boot.remove();
-        await appRunner.runApp();
       }
     });
   </script>
