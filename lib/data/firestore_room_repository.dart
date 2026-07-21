@@ -37,9 +37,9 @@ class FirestoreRoomRepository implements RoomRepository {
           e.code == 'admin-restricted-operation' ||
           e.code == 'operation-not-allowed') {
         throw StateError(
-          'Firebase Authentication is not ready. In the Firebase console for '
-          'project "churchgamey": open Authentication → Get started → Sign-in '
-          'method → enable Anonymous. Then retry.',
+          'Firebase Authentication is not ready. In the Firebase console: '
+          'open Authentication → Get started → Sign-in method → enable '
+          'Anonymous. Then retry.',
         );
       }
       rethrow;

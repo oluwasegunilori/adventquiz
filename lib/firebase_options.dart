@@ -1,6 +1,7 @@
-// Generated-style options placeholder.
-// Run `flutterfire configure` (or paste your Firebase web config) to enable
-// online multiplayer across devices. Until then the app uses local mode.
+// Placeholder Firebase options — do not commit real keys.
+// Run `flutterfire configure` locally (or copy values from the Firebase
+// console into this file) to enable online multiplayer. Until then the app
+// uses local demo mode.
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
@@ -26,27 +27,28 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB1KjeM26ij00OKFB_mZb9TTNlfZIKG9YU',
-    appId: '1:679500370598:web:db57482b943156edebda67',
-    messagingSenderId: '679500370598',
-    projectId: 'churchgamey',
-    authDomain: 'churchgamey.firebaseapp.com',
-    storageBucket: 'churchgamey.firebasestorage.app',
+    apiKey: 'YOUR_API_KEY',
+    appId: 'YOUR_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'YOUR_PROJECT_ID',
+    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDM11fg62HkdTFHsElXkgdSvGq18UM3Jbo',
-    appId: '1:679500370598:android:19535f4bc195afc6ebda67',
-    messagingSenderId: '679500370598',
-    projectId: 'churchgamey',
-    storageBucket: 'churchgamey.firebasestorage.app',
+    apiKey: 'YOUR_API_KEY',
+    appId: 'YOUR_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'YOUR_PROJECT_ID',
+    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
   );
+
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBadZTDkCNLSTM3dQErqyy9Yne5-pFdcTk',
-    appId: '1:679500370598:ios:fa1736f35221e93aebda67',
-    messagingSenderId: '679500370598',
-    projectId: 'churchgamey',
-    storageBucket: 'churchgamey.firebasestorage.app',
+    apiKey: 'YOUR_API_KEY',
+    appId: 'YOUR_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'YOUR_PROJECT_ID',
+    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
     iosBundleId: 'com.adventquiz.adventquiz',
   );
 }

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "679500370598",
-    "project_id": "churchgamey",
-    "storage_bucket": "churchgamey.firebasestorage.app"
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:679500370598:android:19535f4bc195afc6ebda67",
+        "mobilesdk_app_id": "YOUR_ANDROID_APP_ID",
         "android_client_info": {
           "package_name": "com.adventquiz.adventquiz"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDM11fg62HkdTFHsElXkgdSvGq18UM3Jbo"
+          "current_key": "YOUR_API_KEY"
         }
       ],
       "services": {
