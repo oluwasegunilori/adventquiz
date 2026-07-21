@@ -49,6 +49,11 @@ app.*.map.json
 firepit-log.txt
 log-report-*/
 
-# Secrets / local overrides
+# Secrets / local Firebase config (never commit real keys)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
 google-services.json.bak
 GoogleService-Info.plist.bak
+.env
+.env.*
+!.env.example

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   static const ink = Color(0xFF2C2420);
@@ -15,7 +14,20 @@ class AppColors {
 }
 
 class AppTheme {
+  /// Uses bundled platform fonts so web never blocks on Google Fonts CDN.
   static ThemeData light() {
+    const display = TextStyle(
+      fontFamily: 'Georgia',
+      fontFamilyFallback: ['Times New Roman', 'serif'],
+      color: AppColors.ink,
+      fontWeight: FontWeight.w700,
+    );
+    const body = TextStyle(
+      fontFamily: 'Helvetica Neue',
+      fontFamilyFallback: ['Arial', 'sans-serif'],
+      color: AppColors.ink,
+    );
+
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -29,52 +41,31 @@ class AppTheme {
         onSurface: AppColors.ink,
       ),
       scaffoldBackgroundColor: AppColors.parchment,
+      fontFamily: 'Helvetica Neue',
     );
 
-    final display = GoogleFonts.literataTextTheme(base.textTheme);
-    final body = GoogleFonts.sourceSans3TextTheme(base.textTheme);
-
     return base.copyWith(
-      textTheme: body.copyWith(
-        displayLarge: display.displayLarge?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w700,
-        ),
-        displayMedium: display.displayMedium?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w700,
-        ),
-        displaySmall: display.displaySmall?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w700,
-        ),
-        headlineLarge: display.headlineLarge?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w700,
-        ),
-        headlineMedium: display.headlineMedium?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w700,
-        ),
-        headlineSmall: display.headlineSmall?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w600,
-        ),
-        titleLarge: display.titleLarge?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w600,
-        ),
+      textTheme: base.textTheme.copyWith(
+        displayLarge: display.copyWith(fontSize: 57),
+        displayMedium: display.copyWith(fontSize: 45),
+        displaySmall: display.copyWith(fontSize: 36),
+        headlineLarge: display.copyWith(fontSize: 32),
+        headlineMedium: display.copyWith(fontSize: 28),
+        headlineSmall: display.copyWith(fontSize: 24, fontWeight: FontWeight.w600),
+        titleLarge: display.copyWith(fontSize: 22, fontWeight: FontWeight.w600),
+        titleMedium: body.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+        titleSmall: body.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+        bodyLarge: body.copyWith(fontSize: 16),
+        bodyMedium: body.copyWith(fontSize: 14),
+        bodySmall: body.copyWith(fontSize: 12, color: AppColors.mist),
+        labelLarge: body.copyWith(fontSize: 14, fontWeight: FontWeight.w700),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         foregroundColor: AppColors.ink,
-        titleTextStyle: display.titleLarge?.copyWith(
-          color: AppColors.ink,
-          fontWeight: FontWeight.w700,
-          fontSize: 20,
-        ),
+        titleTextStyle: display.copyWith(fontSize: 20),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
