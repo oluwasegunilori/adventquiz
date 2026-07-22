@@ -53,4 +53,37 @@ void main() {
     expect(after!.status, RoomStatus.leaderboard);
     expect(after.players.firstWhere((p) => p.nickname == 'Ada').score, greaterThan(0));
   });
+
+  test('new player cannot join after game has started', () async {
+    final host = LocalRoomRepository();
+    final early = LocalRoomRepository();
+    final late = LocalRoomRepository();
+    final packs = await PackLoader().loadAll();
+    final room = await host.createRoom(pack: packs.first, hostNickname: 'Host');
+    await early.joinRoom(pin: room.pin, nickname: 'Ada');
+    await host.startGame(room.id);
+
+    await expectLater(
+      () => late.joinRoom(pin: room.pin, nickname: 'Bob'),
+      throwsA(
+        isA<StateError>().having(
+          (e) => e.message,
+          'message',
+          contains('already started'),
+        ),
+      ),
+    );
+  });
+
+  test('existing player can reconnect after game has started', () async {
+    final host = LocalRoomRepository();
+    final player = LocalRoomRepository();
+    final packs = await PackLoader().loadAll();
+    final room = await host.createRoom(pack: packs.first, hostNickname: 'Host');
+    await player.joinRoom(pin: room.pin, nickname: 'Ada');
+    await host.startGame(room.id);
+
+    final again = await player.joinRoom(pin: room.pin, nickname: 'Ada');
+    expect(again.id, room.id);
+  });
 }

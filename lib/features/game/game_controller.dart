@@ -24,16 +24,24 @@ class GameController extends ChangeNotifier {
   String? error;
   bool busy = false;
   Timer? _questionTimer;
+  Timer? _revealGrace;
   int remainingMs = 0;
   String? selectedChoiceId;
   int? lastPoints;
   bool? lastCorrect;
+  /// True when a tap was locked in locally but the server rejected it as late.
+  bool answerTooLate = false;
   int _lastPlayerCount = 0;
 
   String? get uid => repository.currentUid;
 
   bool get isMeHost =>
       room != null && uid != null && room!.hostUid == uid;
+
+  bool get answersLocked =>
+      room?.status != RoomStatus.question ||
+      remainingMs <= 0 ||
+      selectedChoiceId != null;
 
   Future<void> start() async {
     await repository.ensureSignedIn();
@@ -47,11 +55,13 @@ class GameController extends ChangeNotifier {
       }
       _handleTransitions(previous, value);
       _syncTimer(previous, value);
-      if (previous?.currentIndex != value.currentIndex ||
-          previous?.status != value.status) {
+      // Only wipe selection when the question changes — keep it through reveal
+      // so late/rejected taps can still show a clear message.
+      if (previous?.currentIndex != value.currentIndex) {
         selectedChoiceId = null;
         lastPoints = null;
         lastCorrect = null;
+        answerTooLate = false;
       }
       final mine =
           uid == null ? null : value.answerFor(uid!, value.currentIndex);
@@ -59,6 +69,7 @@ class GameController extends ChangeNotifier {
         selectedChoiceId = mine.choiceId;
         lastPoints = mine.points;
         lastCorrect = mine.correct;
+        answerTooLate = false;
       }
       notifyListeners();
     }, onError: (Object e) {
@@ -70,6 +81,7 @@ class GameController extends ChangeNotifier {
   void _handleTransitions(GameRoom? previous, GameRoom next) {
     if (previous == null) {
       _lastPlayerCount = next.players.length;
+      _syncMusic(next.status);
       return;
     }
 
@@ -84,6 +96,8 @@ class GameController extends ChangeNotifier {
       return;
     }
 
+    _syncMusic(next.status);
+
     switch (next.status) {
       case RoomStatus.question:
         sounds.resetTickGate();
@@ -96,6 +110,21 @@ class GameController extends ChangeNotifier {
         sounds.play(GameSound.podium);
       case RoomStatus.lobby:
         break;
+    }
+  }
+
+  void _syncMusic(RoomStatus status) {
+    switch (status) {
+      case RoomStatus.lobby:
+        unawaited(sounds.setMusic(MusicBed.lounge));
+      case RoomStatus.question:
+        // Keep questions clear for ticks / focus.
+        unawaited(sounds.setMusic(MusicBed.none));
+      case RoomStatus.reveal:
+      case RoomStatus.leaderboard:
+        unawaited(sounds.setMusic(MusicBed.lounge));
+      case RoomStatus.finished:
+        unawaited(sounds.setMusic(MusicBed.celebration));
     }
   }
 
@@ -120,6 +149,8 @@ class GameController extends ChangeNotifier {
   void _syncTimer(GameRoom? previous, GameRoom room) {
     if (room.status != RoomStatus.question) {
       _questionTimer?.cancel();
+      _revealGrace?.cancel();
+      _revealGrace = null;
       remainingMs = 0;
       return;
     }
@@ -130,6 +161,9 @@ class GameController extends ChangeNotifier {
     if (!startedFresh && _questionTimer != null) return;
 
     _questionTimer?.cancel();
+    _revealGrace?.cancel();
+    _revealGrace = null;
+
     void tick() {
       final elapsed =
           DateTime.now().difference(room.questionStartedAt!).inMilliseconds;
@@ -139,9 +173,14 @@ class GameController extends ChangeNotifier {
       notifyListeners();
       if (remainingMs <= 0 &&
           isHost &&
-          this.room?.status == RoomStatus.question) {
-        _questionTimer?.cancel();
-        reveal();
+          this.room?.status == RoomStatus.question &&
+          _revealGrace == null) {
+        // Short grace so in-flight submits can land before reveal.
+        _revealGrace = Timer(const Duration(milliseconds: 900), () {
+          if (this.room?.status == RoomStatus.question) {
+            reveal();
+          }
+        });
       }
     }
 
@@ -191,7 +230,13 @@ class GameController extends ChangeNotifier {
     final current = room;
     if (current == null || current.status != RoomStatus.question) return;
     if (selectedChoiceId != null) return;
+    if (remainingMs <= 0) {
+      answerTooLate = true;
+      notifyListeners();
+      return;
+    }
     selectedChoiceId = choiceId;
+    answerTooLate = false;
     notifyListeners();
     final started = current.questionStartedAt ?? DateTime.now();
     final ms = DateTime.now().difference(started).inMilliseconds;
@@ -204,9 +249,19 @@ class GameController extends ChangeNotifier {
       );
       lastPoints = answer.points;
       lastCorrect = answer.correct;
+      answerTooLate = false;
     } catch (e) {
-      selectedChoiceId = null;
-      error = e.toString().replaceFirst('Bad state: ', '');
+      final msg = e.toString().replaceFirst('Bad state: ', '');
+      // Keep the local selection so reveal can say "too late" instead of
+      // "you did not answer" when the host already flipped to reveal.
+      if (msg.contains('Not accepting answers') ||
+          msg.contains('Question mismatch')) {
+        answerTooLate = true;
+        error = null;
+      } else {
+        selectedChoiceId = null;
+        error = msg;
+      }
     }
     notifyListeners();
   }
@@ -215,6 +270,7 @@ class GameController extends ChangeNotifier {
   void dispose() {
     _sub?.cancel();
     _questionTimer?.cancel();
+    _revealGrace?.cancel();
     super.dispose();
   }
 }

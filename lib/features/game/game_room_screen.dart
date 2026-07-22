@@ -7,6 +7,8 @@ import '../../data/room_repository.dart';
 import '../../models/room.dart';
 import '../../services/sound_service.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/responsive.dart';
+import '../../utils/share_room.dart';
 import '../../widgets/answer_button.dart';
 import '../../widgets/atmosphere_background.dart';
 import '../../widgets/bounce_buttons.dart';
@@ -118,6 +120,7 @@ class _LobbyView extends StatelessWidget {
     final c = context.watch<GameController>();
     final room = c.room!;
     final host = c.isHost || c.isMeHost;
+    final compact = context.isCompact;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -136,21 +139,26 @@ class _LobbyView extends StatelessWidget {
           child: Text(
             room.packTitle,
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: AppColors.mist,
+                  fontSize: compact ? 14 : null,
                 ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         FadeSlideIn(
           delay: const Duration(milliseconds: 80),
           child: Text(
             'Join at AdventQuiz',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: compact
+                ? Theme.of(context).textTheme.titleLarge
+                : Theme.of(context).textTheme.headlineSmall,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: compact ? 12 : 16),
         PopIn(
           delay: const Duration(milliseconds: 120),
           child: Pulse(
@@ -165,7 +173,7 @@ class _LobbyView extends StatelessWidget {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(vertical: compact ? 16 : 20),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.75),
                   borderRadius: BorderRadius.circular(20),
@@ -188,21 +196,31 @@ class _LobbyView extends StatelessWidget {
                         letterSpacing: 2,
                         fontWeight: FontWeight.w700,
                         color: AppColors.mist,
+                        fontSize: compact ? 12 : null,
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      room.pin,
-                      style:
-                          Theme.of(context).textTheme.displaySmall?.copyWith(
-                                letterSpacing: 10,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          room.pin,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
+                                letterSpacing: compact ? 4 : 10,
                                 fontWeight: FontWeight.w800,
                                 color: AppColors.forestDeep,
+                                fontSize: compact ? 36 : null,
                               ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Tap to copy',
+                      'Tap PIN to copy',
                       style: TextStyle(color: AppColors.mist, fontSize: 12),
                     ),
                   ],
@@ -211,7 +229,44 @@ class _LobbyView extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 12),
+        BounceOutlinedButton(
+          onPressed: () async {
+            try {
+              final outcome = await shareRoom(
+                pin: room.pin,
+                packTitle: room.packTitle,
+              );
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    outcome == ShareRoomOutcome.shared
+                        ? 'Invite shared'
+                        : 'Invite copied — paste to send the PIN + link',
+                  ),
+                ),
+              );
+            } catch (_) {
+              await Clipboard.setData(
+                ClipboardData(
+                  text: roomShareText(
+                    pin: room.pin,
+                    packTitle: room.packTitle,
+                  ),
+                ),
+              );
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Invite copied — paste to send the PIN + link'),
+                ),
+              );
+            }
+          },
+          child: const Text('Share room'),
+        ),
+        SizedBox(height: compact ? 14 : 20),
         Text(
           'Players (${room.players.length})',
           style: Theme.of(context).textTheme.titleMedium,
@@ -321,7 +376,15 @@ class _QuestionView extends StatelessWidget {
     final progress = totalMs == 0 ? 0.0 : c.remainingMs / totalMs;
     final host = c.isHost || c.isMeHost;
     final answered = c.selectedChoiceId != null;
+    final locked = c.answersLocked;
     final urgent = progress < 0.25;
+    final compact = context.isCompact;
+    final width = MediaQuery.sizeOf(context).width;
+    final answerAspect = width < 380
+        ? 1.05
+        : width < 600
+            ? 1.2
+            : 1.55;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -372,24 +435,25 @@ class _QuestionView extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: compact ? 12 : 20),
         FadeSlideIn(
           key: ValueKey('q-${room.currentIndex}'),
           child: Text(
             q.text,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  height: 1.25,
-                ),
+            style: (compact
+                    ? Theme.of(context).textTheme.titleLarge
+                    : Theme.of(context).textTheme.headlineSmall)
+                ?.copyWith(height: 1.25),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: compact ? 12 : 20),
         Expanded(
           child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.55,
+              mainAxisSpacing: compact ? 8 : 12,
+              crossAxisSpacing: compact ? 8 : 12,
+              childAspectRatio: answerAspect,
             ),
             itemCount: q.choices.length,
             itemBuilder: (context, index) {
@@ -401,7 +465,8 @@ class _QuestionView extends StatelessWidget {
                 color: _choiceColors[index % _choiceColors.length],
                 symbol: _choiceSymbols[index % _choiceSymbols.length],
                 selected: selected,
-                enabled: !answered,
+                dimmed: answered && !selected,
+                enabled: !locked,
                 entranceDelay: Duration(milliseconds: 70 * index),
                 onTap: () => c.submitAnswer(choice.id),
               );
@@ -415,8 +480,8 @@ class _QuestionView extends StatelessWidget {
                   key: const ValueKey('locked'),
                   padding: const EdgeInsets.only(bottom: 8),
                   child: PopIn(
-                    child: Text(
-                      'Answer locked in — hang tight!',
+                      child: Text(
+                      'Your answer is highlighted — hang tight!',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.forestDeep,
@@ -425,7 +490,20 @@ class _QuestionView extends StatelessWidget {
                     ),
                   ),
                 )
-              : const SizedBox.shrink(key: ValueKey('open')),
+              : c.remainingMs <= 0
+                  ? Padding(
+                      key: const ValueKey('times-up'),
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        'Time’s up — waiting for reveal…',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.mist,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(key: ValueKey('open')),
         ),
         if (host)
           BounceOutlinedButton(
@@ -534,6 +612,15 @@ class _RevealView extends StatelessWidget {
               ),
             ),
           )
+        else if (c.answerTooLate || c.selectedChoiceId != null)
+          Text(
+            'Too late — that answer didn’t count',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColors.clay,
+              fontWeight: FontWeight.w700,
+            ),
+          )
         else
           Text(
             'You did not answer',
@@ -550,7 +637,7 @@ class _RevealView extends StatelessWidget {
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final sideBySide = constraints.maxWidth >= 760;
+              final sideBySide = constraints.maxWidth >= 700;
               if (sideBySide) {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,

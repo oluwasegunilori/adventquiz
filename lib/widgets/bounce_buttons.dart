@@ -11,16 +11,18 @@ class BounceFilledButton extends StatelessWidget {
     required this.onPressed,
     required this.child,
     this.sound = GameSound.click,
+    this.expand = true,
   });
 
   final VoidCallback? onPressed;
   final Widget child;
   final GameSound sound;
+  final bool expand;
 
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
-    return BounceTap(
+    final button = BounceTap(
       enabled: enabled,
       sound: sound,
       onTap: onPressed,
@@ -28,8 +30,9 @@ class BounceFilledButton extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         opacity: enabled ? 1 : 0.45,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 220, minHeight: 56),
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          width: expand ? double.infinity : null,
+          constraints: const BoxConstraints(minHeight: 52),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           decoration: BoxDecoration(
             color: AppColors.forest,
             borderRadius: BorderRadius.circular(16),
@@ -56,6 +59,7 @@ class BounceFilledButton extends StatelessWidget {
         ),
       ),
     );
+    return button;
   }
 }
 
@@ -65,11 +69,13 @@ class BounceOutlinedButton extends StatelessWidget {
     required this.onPressed,
     required this.child,
     this.sound = GameSound.click,
+    this.expand = true,
   });
 
   final VoidCallback? onPressed;
   final Widget child;
   final GameSound sound;
+  final bool expand;
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +88,9 @@ class BounceOutlinedButton extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         opacity: enabled ? 1 : 0.45,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 220, minHeight: 56),
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          width: expand ? double.infinity : null,
+          constraints: const BoxConstraints(minHeight: 52),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(16),

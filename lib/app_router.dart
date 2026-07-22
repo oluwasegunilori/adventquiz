@@ -19,7 +19,9 @@ GoRouter createRouter({required bool usingFirebase}) {
       ),
       GoRoute(
         path: '/join',
-        builder: (context, state) => const JoinScreen(),
+        builder: (context, state) => JoinScreen(
+          initialPin: state.uri.queryParameters['pin'],
+        ),
       ),
       GoRoute(
         path: '/room/:roomId',

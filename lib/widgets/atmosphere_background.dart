@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
+import '../utils/responsive.dart';
+import 'wandering_ambience.dart';
 
 class AtmosphereBackground extends StatelessWidget {
   const AtmosphereBackground({super.key, required this.child});
@@ -41,6 +43,7 @@ class AtmosphereBackground extends StatelessWidget {
               color: AppColors.clay.withValues(alpha: 0.1),
             ),
           ),
+          const Positioned.fill(child: WanderingAmbience()),
           Positioned.fill(child: child),
         ],
       ),
@@ -72,19 +75,22 @@ class MaxWidth extends StatelessWidget {
     super.key,
     required this.child,
     this.width = 720,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    this.padding,
   });
 
   final Widget child;
   final double width;
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: width),
-        child: Padding(padding: padding, child: child),
+        child: Padding(
+          padding: padding ?? context.pagePadding,
+          child: child,
+        ),
       ),
     );
   }

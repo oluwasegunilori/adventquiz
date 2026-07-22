@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/quiz_pack.dart';
 import '../models/room.dart';
+import 'join_messages.dart';
 import 'room_repository.dart';
 import 'scoring.dart';
 
@@ -104,16 +105,27 @@ class FirestoreRoomRepository implements RoomRepository {
     }
     final doc = snap.docs.first;
     final data = doc.data();
-    if ((data['status'] as String?) != RoomStatus.lobby.wireName) {
-      throw StateError('Game already started');
+    final status = RoomStatusX.fromWire(data['status'] as String? ?? 'lobby');
+    final playerRef = doc.reference.collection('players').doc(uid);
+    final existing = await playerRef.get();
+
+    // Reconnect: already seated players may return even after start.
+    if (existing.exists) {
+      final player = RoomPlayer.fromJson(existing.data()!);
+      return GameRoom.fromDoc(id: doc.id, data: data, players: [player]);
     }
+
+    if (status != RoomStatus.lobby) {
+      throw StateError(joinClosedMessage(status));
+    }
+
     final player = RoomPlayer(
       uid: uid,
       nickname: nickname.trim().isEmpty ? 'Player' : nickname.trim(),
       score: 0,
       joinedAt: DateTime.now(),
     );
-    await doc.reference.collection('players').doc(uid).set(player.toJson());
+    await playerRef.set(player.toJson());
     return GameRoom.fromDoc(id: doc.id, data: data, players: [player]);
   }
 
@@ -301,3 +313,4 @@ class FirestoreRoomRepository implements RoomRepository {
     });
   }
 }
+
