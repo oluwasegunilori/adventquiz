@@ -44,13 +44,26 @@ class AdventQuizApp extends StatefulWidget {
   State<AdventQuizApp> createState() => _AdventQuizAppState();
 }
 
-class _AdventQuizAppState extends State<AdventQuizApp> {
+class _AdventQuizAppState extends State<AdventQuizApp>
+    with WidgetsBindingObserver {
   late AppBootstrap _bootstrap = widget.initialBootstrap;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     unawaited(_upgradeFirebase());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    widget.sounds.handleAppLifecycle(state);
   }
 
   Future<void> _upgradeFirebase() async {

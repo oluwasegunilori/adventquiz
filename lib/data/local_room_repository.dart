@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/quiz_pack.dart';
 import '../models/room.dart';
+import 'join_messages.dart';
 import 'room_repository.dart';
 import 'scoring.dart';
 
@@ -166,10 +167,10 @@ class LocalRoomRepository implements RoomRepository {
       );
     }
     final room = _requireLoaded(await _loadRoom(roomId));
-    if (room.status != RoomStatus.lobby) {
-      throw StateError('Game already started');
-    }
     if (room.players.any((p) => p.uid == uid)) return room;
+    if (room.status != RoomStatus.lobby) {
+      throw StateError(joinClosedMessage(room.status));
+    }
     final player = RoomPlayer(
       uid: uid,
       nickname: nickname.trim().isEmpty ? 'Player' : nickname.trim(),

@@ -19,7 +19,9 @@ service cloud.firestore {
         allow read: if signedIn();
         allow create: if signedIn()
           && request.auth.uid == playerId
-          && request.resource.data.uid == playerId;
+          && request.resource.data.uid == playerId
+          && get(/databases/$(database)/documents/rooms/$(roomId)).data.status
+            == 'lobby';
         allow update: if signedIn()
           && (request.auth.uid == playerId
             || get(/databases/$(database)/documents/rooms/$(roomId)).data.hostUid
